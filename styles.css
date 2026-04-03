@@ -1,0 +1,133 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: #1e1e1e;
+  color: #ccc;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 150px;
+  background: #252526;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.sidebar h3 {
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.section-label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  margin-top: 10px;
+  margin-bottom: 2px;
+}
+
+.sidebar button {
+  width: 100%;
+  padding: 7px;
+  background: #3c3c3c;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+  border-radius: 3px;
+}
+
+.sidebar button:hover { background: #505050; }
+.sidebar button.active { background: #0e639c; color: #fff; }
+
+.run-btn {
+  background: #1a7a1a !important;
+  color: #fff !important;
+}
+.run-btn:hover { background: #228b22 !important; }
+
+.auto-label {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+/* Editor area */
+.editor-area {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  border-right: 1px solid #333;
+}
+
+.tabs {
+  display: flex;
+  background: #2d2d2d;
+  border-bottom: 1px solid #333;
+}
+
+.tab {
+  padding: 6px 16px;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 2px solid transparent;
+}
+
+.tab:hover { color: #ccc; }
+.tab.active { color: #fff; border-bottom-color: #0e639c; }
+
+/* Hide tabs when in python mode */
+.tabs.hidden { display: none; }
+
+#editor {
+  flex: 1;
+}
+
+/* Preview */
+#preview {
+  flex: 1;
+  border: none;
+  background: #fff;
+}
+
+/* Terminal */
+#terminal {
+  height: 20vh;
+  background: #0d0d0d;
+  color: #00ff00;
+  padding: 10px 14px;
+  overflow-y: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  white-space: pre-wrap;
+  border-top: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.prompt { color: #888; }
+.error { color: #ff5555; }

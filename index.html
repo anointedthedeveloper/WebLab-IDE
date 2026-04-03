@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebLab IDE</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <h3>WebLab IDE</h3>
+
+    <p class="section-label">Language</p>
+    <button onclick="setLanguage('html')" id="btn-html" class="active">HTML</button>
+    <button onclick="setLanguage('python')" id="btn-python">Python</button>
+
+    <p class="section-label">Actions</p>
+    <button onclick="runCode()" class="run-btn">▶ Run</button>
+
+    <label class="auto-label">
+      <input type="checkbox" id="autoRun"> Auto-run
+    </label>
+  </div>
+
+  <div class="editor-area">
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="html" onclick="switchTab('html')">HTML</button>
+      <button class="tab" data-tab="css" onclick="switchTab('css')">CSS</button>
+      <button class="tab" data-tab="js" onclick="switchTab('js')">JS</button>
+    </div>
+    <div id="editor"></div>
+  </div>
+
+  <iframe id="preview"></iframe>
+
+</div>
+
+<div id="terminal"><span class="prompt">$</span> Ready.</div>
+
+<script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
