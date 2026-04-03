@@ -4,40 +4,109 @@
   <meta charset="UTF-8">
   <title>WebLab IDE</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- Title Bar -->
+<div class="titlebar">
+  <div class="titlebar-left">
+    <span class="logo">⬡</span>
+    <span class="logo-text">WebLab <strong>IDE</strong></span>
+  </div>
+  <div class="titlebar-center">
+    <span id="filename-display">index.html</span>
+  </div>
+  <div class="titlebar-right">
+    <span id="lang-badge">HTML</span>
+  </div>
+</div>
+
 <div class="container">
 
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h3>WebLab IDE</h3>
+    <div class="sidebar-section">
+      <p class="section-label">Language</p>
+      <button onclick="setLanguage('html')" id="btn-html" class="active">
+        <span class="icon">🌐</span> HTML
+      </button>
+      <button onclick="setLanguage('python')" id="btn-python">
+        <span class="icon">🐍</span> Python
+      </button>
+    </div>
 
-    <p class="section-label">Language</p>
-    <button onclick="setLanguage('html')" id="btn-html" class="active">HTML</button>
-    <button onclick="setLanguage('python')" id="btn-python">Python</button>
+    <div class="sidebar-section">
+      <p class="section-label">Actions</p>
+      <button onclick="runCode()" class="run-btn">
+        <span class="icon">▶</span> Run
+      </button>
+      <button onclick="clearTerminal()" class="clear-btn">
+        <span class="icon">✕</span> Clear
+      </button>
+    </div>
 
-    <p class="section-label">Actions</p>
-    <button onclick="runCode()" class="run-btn">▶ Run</button>
+    <div class="sidebar-section">
+      <label class="auto-label">
+        <div class="toggle-wrap">
+          <input type="checkbox" id="autoRun">
+          <span class="toggle-slider"></span>
+        </div>
+        Auto-run
+      </label>
+    </div>
 
-    <label class="auto-label">
-      <input type="checkbox" id="autoRun"> Auto-run
-    </label>
+    <div class="sidebar-footer">
+      <span class="version">v1.0.0</span>
+    </div>
   </div>
 
+  <!-- Editor -->
   <div class="editor-area">
     <div class="tabs" id="tabs">
-      <button class="tab active" data-tab="html" onclick="switchTab('html')">HTML</button>
-      <button class="tab" data-tab="css" onclick="switchTab('css')">CSS</button>
-      <button class="tab" data-tab="js" onclick="switchTab('js')">JS</button>
+      <button class="tab active" data-tab="html" onclick="switchTab('html')">
+        <span class="tab-icon html-icon">H</span> index.html
+      </button>
+      <button class="tab" data-tab="css" onclick="switchTab('css')">
+        <span class="tab-icon css-icon">C</span> style.css
+      </button>
+      <button class="tab" data-tab="js" onclick="switchTab('js')">
+        <span class="tab-icon js-icon">J</span> script.js
+      </button>
     </div>
     <div id="editor"></div>
   </div>
 
-  <iframe id="preview"></iframe>
+  <!-- Preview -->
+  <div class="preview-area">
+    <div class="preview-header">
+      <span class="preview-title">🔍 Preview</span>
+      <button class="refresh-btn" onclick="updatePreview()" title="Refresh preview">↺</button>
+    </div>
+    <iframe id="preview"></iframe>
+  </div>
 
 </div>
 
-<div id="terminal"><span class="prompt">$</span> Ready.</div>
+<!-- Terminal -->
+<div class="terminal-wrap">
+  <div class="terminal-header">
+    <span class="terminal-title">⚡ Terminal</span>
+    <div class="terminal-dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+  </div>
+  <div id="terminal"><span class="prompt">~/weblab $</span> Ready.</div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <span>Developed by <strong>anointedthedeveloper</strong></span>
+  <span class="footer-right">WebLab IDE &copy; 2025</span>
+</div>
 
 <script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
 <script src="app.js"></script>
