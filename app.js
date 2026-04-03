@@ -143,43 +143,47 @@ function registerSnippets() {
 }
 
 // ── Resize logic ──────────────────────────────────────────────
+const overlay = () => document.getElementById("drag-overlay");
+
 function initResize() {
-  // Sidebar horizontal resize
   makeDragH(
     document.getElementById("resize-sidebar"),
     () => document.getElementById("sidebar").offsetWidth,
-    (w) => { document.getElementById("sidebar").style.width = w + "px"; }
+    (w) => { document.getElementById("sidebar").style.width = Math.max(120, Math.min(320, w)) + "px"; }
   );
 
-  // Editor/Preview horizontal resize
   makeDragH(
     document.getElementById("resize-editor"),
     () => document.getElementById("editor-area").offsetWidth,
     (w) => {
       const mainW = document.getElementById("main-area").offsetWidth;
-      const pct = (w / mainW) * 100;
+      const pct = Math.max(15, Math.min(85, (w / mainW) * 100));
       document.getElementById("editor-area").style.width = pct + "%";
     }
   );
 
-  // Terminal vertical resize
   makeDragV(
     document.getElementById("resize-terminal"),
     () => document.getElementById("terminal-wrap").offsetHeight,
-    (h) => { document.getElementById("terminal-wrap").style.height = h + "px"; }
+    (h) => { document.getElementById("terminal-wrap").style.height = Math.max(40, Math.min(window.innerHeight * 0.6, h)) + "px"; }
   );
 }
 
 function makeDragH(handle, getSize, setSize) {
   handle.addEventListener("mousedown", (e) => {
     e.preventDefault();
-    const startX = e.clientX;
+    const startX    = e.clientX;
     const startSize = getSize();
     handle.classList.add("dragging");
+    overlay().classList.add("col-active");
 
-    function onMove(e) { setSize(Math.max(80, startSize + (e.clientX - startX))); }
-    function onUp()    { handle.classList.remove("dragging"); document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); }
-
+    function onMove(e) { setSize(startSize + (e.clientX - startX)); }
+    function onUp() {
+      handle.classList.remove("dragging");
+      overlay().classList.remove("col-active");
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+    }
     document.addEventListener("mousemove", onMove);
     document.addEventListener("mouseup", onUp);
   });
@@ -188,13 +192,18 @@ function makeDragH(handle, getSize, setSize) {
 function makeDragV(handle, getSize, setSize) {
   handle.addEventListener("mousedown", (e) => {
     e.preventDefault();
-    const startY = e.clientY;
+    const startY    = e.clientY;
     const startSize = getSize();
     handle.classList.add("dragging");
+    overlay().classList.add("row-active");
 
-    function onMove(e) { setSize(Math.max(40, startSize - (e.clientY - startY))); }
-    function onUp()    { handle.classList.remove("dragging"); document.removeEventListener("mousemove", onMove); document.removeEventListener("mouseup", onUp); }
-
+    function onMove(e) { setSize(startSize - (e.clientY - startY)); }
+    function onUp() {
+      handle.classList.remove("dragging");
+      overlay().classList.remove("row-active");
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+    }
     document.addEventListener("mousemove", onMove);
     document.addEventListener("mouseup", onUp);
   });

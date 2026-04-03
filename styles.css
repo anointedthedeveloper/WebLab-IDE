@@ -194,9 +194,18 @@ svg { width: 14px; height: 14px; flex-shrink: 0; }
 .resize-handle:hover,
 .resize-handle.dragging { background: var(--accent); }
 
+/* Wider invisible hit area via pseudo-element */
 .resize-h {
   width: 4px;
   cursor: col-resize;
+}
+.resize-h::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -4px; right: -4px;
+  cursor: col-resize;
+  z-index: 20;
 }
 
 .resize-v {
@@ -204,6 +213,24 @@ svg { width: 14px; height: 14px; flex-shrink: 0; }
   cursor: row-resize;
   width: 100%;
 }
+.resize-v::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: -4px; bottom: -4px;
+  cursor: row-resize;
+  z-index: 20;
+}
+
+/* Drag overlay — blocks iframe from eating mouse events */
+#drag-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+#drag-overlay.col-active { cursor: col-resize; display: block; }
+#drag-overlay.row-active { cursor: row-resize; display: block; }
 
 /* ── Main Area ── */
 .main-area {
