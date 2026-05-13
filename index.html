@@ -5,83 +5,146 @@
   <title>WebLab IDE</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- Title Bar -->
+<!-- ══ Title Bar ═══════════════════════════════════════════════ -->
 <div class="titlebar">
   <div class="titlebar-left">
-    <svg class="logo-svg" viewBox="0 0 24 24" fill="none"><polygon points="12,2 22,7 22,17 12,22 2,17 2,7" stroke="url(#g1)" stroke-width="1.5" fill="none"/><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7c6af7"/><stop offset="100%" stop-color="#56cfb2"/></linearGradient></defs></svg>
+    <div class="wc">
+      <div class="wc-btn red"></div>
+      <div class="wc-btn yellow"></div>
+      <div class="wc-btn green"></div>
+    </div>
+    <svg class="logo-svg" viewBox="0 0 24 24" fill="none">
+      <polygon points="12,2 22,7 22,17 12,22 2,17 2,7" stroke="url(#g1)" stroke-width="1.5" fill="none"/>
+      <defs>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7c6af7"/>
+          <stop offset="100%" stop-color="#56cfb2"/>
+        </linearGradient>
+      </defs>
+    </svg>
     <span class="logo-text">WebLab <strong>IDE</strong></span>
   </div>
+
   <div class="titlebar-center">
-    <span id="filename-display">index.html</span>
+    <div class="file-path">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14,2 14,8 20,8"/>
+      </svg>
+      <span id="filename-display">index.html</span>
+    </div>
   </div>
+
   <div class="titlebar-right">
     <span id="lang-badge">HTML</span>
   </div>
 </div>
 
-<div class="workspace">
+<!-- ══ Root Body (activity bar + sidebar + main) ═══════════════ -->
+<div class="root-body">
+
+  <!-- Activity Bar -->
+  <div class="activity-bar">
+    <!-- Language buttons repurposed as activity items -->
+    <button class="act-btn active-lang" id="btn-html" onclick="setLanguage('html')" title="HTML Mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M4 3l1.5 16.5L12 21l6.5-1.5L20 3H4z"/>
+        <path d="M16 8H8l.3 3h7.4l-.5 5-3.2.9-3.2-.9-.2-2.5"/>
+      </svg>
+    </button>
+    <button class="act-btn" id="btn-python" onclick="setLanguage('python')" title="Python Mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 2C8 2 8.5 4 8.5 4v2h7V7H6S3 6.5 3 10.5s2.5 4 2.5 4H7v-2s-.1-2 2-2h6s2 .1 2-2V5s.3-3-5-3z"/>
+        <path d="M12 22c4 0 3.5-2 3.5-2v-2H8.5V17H18s3 .5 3-3.5-2.5-4-2.5-4H17v2s.1 2-2 2H9s-2-.1-2 2v5s-.3 3 5 3z"/>
+        <circle cx="10" cy="5" r="1" fill="currentColor"/>
+        <circle cx="14" cy="19" r="1" fill="currentColor"/>
+      </svg>
+    </button>
+
+    <div class="act-spacer"></div>
+
+    <!-- Settings-like icon at bottom -->
+    <button class="act-btn" title="Settings (coming soon)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
 
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">Explorer</div>
+    <div class="sidebar-scroll">
 
-    <div class="sidebar-section">
-      <p class="section-label">Language</p>
-      <button onclick="setLanguage('html')" id="btn-html" class="active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3l1.5 16.5L12 21l6.5-1.5L20 3H4z"/><path d="M16 8H8l.3 3h7.4l-.5 5-3.2.9-3.2-.9-.2-2.5"/></svg>
-        HTML
-      </button>
-      <button onclick="setLanguage('python')" id="btn-python">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2C8 2 8.5 4 8.5 4v2h7V7H6S3 6.5 3 10.5s2.5 4 2.5 4H7v-2s-.1-2 2-2h6s2 .1 2-2V5s.3-3-5-3z"/><path d="M12 22c4 0 3.5-2 3.5-2v-2H8.5V17H18s3 .5 3-3.5-2.5-4-2.5-4H17v2s.1 2-2 2H9s-2-.1-2 2v5s-.3 3 5 3z"/><circle cx="10" cy="5" r="1" fill="currentColor"/><circle cx="14" cy="19" r="1" fill="currentColor"/></svg>
-        Python
-      </button>
+      <div class="sidebar-section">
+        <p class="section-label">Actions</p>
+        <button onclick="runCode()" class="run-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+          Run
+        </button>
+        <button onclick="clearTerminal()" class="clear-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3,6 5,6 21,6"/>
+            <path d="M19 6l-1 14H6L5 6"/>
+            <path d="M10 11v6M14 11v6M9 6V4h6v2"/>
+          </svg>
+          Clear Terminal
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="section-label">Export</p>
+        <button onclick="exportFile('html')" class="export-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/><polyline points="9,15 12,18 15,15"/>
+          </svg>
+          index.html
+        </button>
+        <button onclick="exportFile('css')" class="export-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/><polyline points="9,15 12,18 15,15"/>
+          </svg>
+          style.css
+        </button>
+        <button onclick="exportFile('js')" class="export-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/><polyline points="9,15 12,18 15,15"/>
+          </svg>
+          script.js
+        </button>
+        <button onclick="exportAll()" class="export-all-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7,10 12,15 17,10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Export All (.zip)
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="section-label">Config</p>
+        <label class="auto-label">
+          <div class="toggle-wrap">
+            <input type="checkbox" id="autoRun" checked>
+            <span class="toggle-slider"></span>
+          </div>
+          Auto-run
+        </label>
+      </div>
+
     </div>
-
-    <div class="sidebar-section">
-      <p class="section-label">Actions</p>
-      <button onclick="runCode()" class="run-btn">
-        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-        Run
-      </button>
-      <button onclick="clearTerminal()" class="clear-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        Clear Log
-      </button>
-    </div>
-
-    <div class="sidebar-section">
-      <p class="section-label">Export</p>
-      <button onclick="exportFile('html')" class="export-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9,15 12,18 15,15"/></svg>
-        index.html
-      </button>
-      <button onclick="exportFile('css')" class="export-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9,15 12,18 15,15"/></svg>
-        style.css
-      </button>
-      <button onclick="exportFile('js')" class="export-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9,15 12,18 15,15"/></svg>
-        script.js
-      </button>
-      <button onclick="exportAll()" class="export-all-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export All (.zip)
-      </button>
-    </div>
-
-    <div class="sidebar-section">
-      <label class="auto-label">
-        <div class="toggle-wrap">
-          <input type="checkbox" id="autoRun">
-          <span class="toggle-slider"></span>
-        </div>
-        Auto-run
-      </label>
-    </div>
-
     <div class="sidebar-footer">
       <span class="version">v1.0.0</span>
     </div>
@@ -90,75 +153,128 @@
   <!-- Sidebar resize handle -->
   <div class="resize-handle resize-h" id="resize-sidebar" title="Drag to resize"></div>
 
-  <!-- Main area (editor + preview stacked horizontally) -->
+  <!-- Main column: editor+preview row + terminal -->
   <div class="main-area" id="main-area">
 
-    <!-- Editor -->
-    <div class="editor-area" id="editor-area">
-      <div class="tabs" id="tabs">
-        <button class="tab active" data-tab="html" onclick="switchTab('html')">
-          <span class="tab-icon html-icon">H</span>index.html
-        </button>
-        <button class="tab" data-tab="css" onclick="switchTab('css')">
-          <span class="tab-icon css-icon">C</span>style.css
-        </button>
-        <button class="tab" data-tab="js" onclick="switchTab('js')">
-          <span class="tab-icon js-icon">J</span>script.js
-        </button>
-      </div>
-      <div id="editor"></div>
-    </div>
+    <!-- Editor + Preview row -->
+    <div class="editor-preview-row">
 
-    <!-- Editor/Preview resize handle -->
-    <div class="resize-handle resize-h" id="resize-editor" title="Drag to resize"></div>
-
-    <!-- Preview -->
-    <div class="preview-area" id="preview-area">
-      <div class="panel-header">
-        <div class="panel-header-left">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Preview
+      <!-- Editor -->
+      <div class="editor-area" id="editor-area">
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-tab="html" onclick="switchTab('html')">
+            <span class="tab-icon html-icon">H</span>index.html
+          </button>
+          <button class="tab" data-tab="css" onclick="switchTab('css')">
+            <span class="tab-icon css-icon">C</span>style.css
+          </button>
+          <button class="tab" data-tab="js" onclick="switchTab('js')">
+            <span class="tab-icon js-icon">J</span>script.js
+          </button>
+          <div class="tabs-trailing"></div>
         </div>
-        <button class="icon-btn" onclick="updatePreview()" title="Refresh">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        </button>
+        <div id="editor"></div>
       </div>
-      <iframe id="preview"></iframe>
+
+      <!-- Editor / Preview resize handle -->
+      <div class="resize-handle resize-h" id="resize-editor" title="Drag to resize"></div>
+
+      <!-- Preview -->
+      <div class="preview-area" id="preview-area">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            Preview
+          </div>
+          <div class="panel-header-right">
+            <div class="preview-url">localhost</div>
+            <button class="icon-btn" onclick="updatePreview()" title="Refresh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23,4 23,10 17,10"/>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+
     </div>
 
-  </div>
+    <!-- Terminal resize handle -->
+    <div class="resize-handle resize-v" id="resize-terminal" title="Drag to resize"></div>
 
-</div>
-
-<!-- Terminal resize handle (vertical) -->
-<div class="resize-handle resize-v" id="resize-terminal" title="Drag to resize"></div>
-
-<!-- Terminal -->
-<div class="terminal-wrap" id="terminal-wrap">
-  <div class="panel-header">
-    <div class="panel-header-left">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-      Terminal
+    <!-- Terminal -->
+    <div class="terminal-wrap" id="terminal-wrap">
+      <div class="terminal-tabs">
+        <div class="terminal-tab active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4,17 10,11 4,5"/><line x1="12" y1="19" x2="20" y2="19"/>
+          </svg>
+          Terminal
+        </div>
+        <div class="terminal-tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Problems
+        </div>
+        <div class="terminal-actions">
+          <div class="terminal-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+        </div>
+      </div>
+      <div id="terminal"></div>
     </div>
-    <div class="terminal-dots">
-      <span class="dot red"></span>
-      <span class="dot yellow"></span>
-      <span class="dot green"></span>
-    </div>
-  </div>
-  <div id="terminal"><span class="prompt">~/weblab $</span> Ready.</div>
-</div>
 
-<!-- Footer -->
-<div class="footer">
-  <div class="footer-left">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/></svg>
-    Developed by <strong>anointedthedeveloper</strong>
+  </div><!-- /main-area -->
+
+</div><!-- /root-body -->
+
+<!-- Status Bar -->
+<div class="statusbar">
+  <div class="statusbar-left">
+    <span class="status-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="12,2 22,7 22,17 12,22 2,17 2,7"/>
+      </svg>
+      WebLab IDE
+    </span>
+    <span class="status-sep"></span>
+    <span class="status-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <strong id="status-lang">HTML</strong>
+    </span>
+    <span class="status-sep"></span>
+    <span class="status-item" id="status-autorun">⚡ Auto-run on</span>
   </div>
-  <span class="footer-right">WebLab IDE &copy; 2026-2099</span>
+  <div class="statusbar-right">
+    <span class="status-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="16,18 22,12 16,6"/><polyline points="8,6 2,12 8,18"/>
+      </svg>
+      anointedthedeveloper
+    </span>
+    <span class="status-sep"></span>
+    <span class="status-item">Monaco v0.44</span>
+    <span class="status-sep"></span>
+    <span class="status-item">UTF-8</span>
+  </div>
 </div>
 
 <div id="drag-overlay"></div>
+
 <script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script type="module">
@@ -167,5 +283,29 @@
 </script>
 <script src="app.js"></script>
 
+<script>
+  // Sync status bar with auto-run toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('autoRun');
+    const statusAutoRun = document.getElementById('status-autorun');
+    const statusLang = document.getElementById('status-lang');
+
+    function syncStatus() {
+      statusAutoRun.textContent = toggle.checked ? '⚡ Auto-run on' : '⚡ Auto-run off';
+      statusAutoRun.style.opacity = toggle.checked ? '1' : '0.6';
+    }
+    toggle.addEventListener('change', syncStatus);
+    syncStatus();
+
+    // Also patch setLanguage to update status-lang
+    const _orig = window.setLanguage;
+    window.setLanguage = function(lang) {
+      _orig(lang);
+      statusLang.textContent = lang.toUpperCase();
+      document.querySelectorAll('.act-btn[id^="btn-"]').forEach(b => b.classList.remove('active-lang'));
+      document.getElementById('btn-' + lang)?.classList.add('active-lang');
+    };
+  });
+</script>
 </body>
 </html>
