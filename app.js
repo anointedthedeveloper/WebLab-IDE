@@ -27,11 +27,11 @@ require(["vs/editor/editor.main"], function () {
   editor = monaco.editor.create(document.getElementById("editor"), {
     value: tabContent.html,
     language: "html",
-    theme: "vs-dark",
+    theme: "weblab-dark",
     fontSize: 14,
     fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
     fontLigatures: true,
-    minimap: { enabled: false },
+    minimap: { enabled: true, renderCharacters: false, scale: 1 },
     automaticLayout: true,
     tabSize: 2,
     wordWrap: "on",
@@ -48,12 +48,49 @@ require(["vs/editor/editor.main"], function () {
     cursorBlinking: "smooth",
     cursorSmoothCaretAnimation: "on",
     smoothScrolling: true,
-    renderLineHighlight: "gutter",
+    renderLineHighlight: "line",
     bracketPairColorization: { enabled: true },
     guides: { bracketPairs: true, indentation: true },
-    padding: { top: 10 },
-    scrollbar: { verticalScrollbarSize: 4, horizontalScrollbarSize: 4 }
+    padding: { top: 12 },
+    scrollbar: { verticalScrollbarSize: 6, horizontalScrollbarSize: 6 },
+    lineNumbers: "on",
+    glyphMargin: true,
+    folding: true,
+    foldingHighlight: true,
+    showUnused: true,
+    stickyScroll: { enabled: true }
   });
+
+  // Define custom dark theme that matches IDE palette
+  monaco.editor.defineTheme("weblab-dark", {
+    base: "vs-dark",
+    inherit: true,
+    rules: [
+      { token: "comment",        foreground: "5c6370", fontStyle: "italic" },
+      { token: "keyword",        foreground: "c678dd" },
+      { token: "string",         foreground: "98c379" },
+      { token: "number",         foreground: "d19a66" },
+      { token: "tag",            foreground: "e06c75" },
+      { token: "attribute.name", foreground: "d19a66" },
+      { token: "attribute.value",foreground: "98c379" },
+      { token: "type",           foreground: "e5c07b" },
+    ],
+    colors: {
+      "editor.background":           "#13131a",
+      "editor.foreground":           "#abb2bf",
+      "editor.lineHighlightBackground": "#1e1e2e",
+      "editorLineNumber.foreground": "#3d3d55",
+      "editorLineNumber.activeForeground": "#7c6af7",
+      "editor.selectionBackground":  "#3d3d6680",
+      "editorCursor.foreground":     "#7c6af7",
+      "editorWidget.background":     "#1a1a24",
+      "editorWidget.border":         "#2a2a3a",
+      "editorSuggestWidget.background": "#1a1a24",
+      "editorSuggestWidget.border":     "#2a2a3a",
+      "editorSuggestWidget.selectedBackground": "#2a2a40",
+    }
+  });
+  monaco.editor.setTheme("weblab-dark");
 
   editor.onDidChangeModelContent(() => {
     if (ignoreChange) return;
@@ -75,6 +112,10 @@ require(["vs/editor/editor.main"], function () {
 
   registerSnippets();
   updatePreview();
+
+  // Show ready state
+  log("WebLab IDE ready. Monaco v0.44 loaded.", "info");
+  log("Auto-run enabled — edits update the preview live.", "info");
 });
 
 // ── Snippets ──────────────────────────────────────────────────
@@ -165,7 +206,10 @@ function initResize() {
   makeDragV(
     document.getElementById("resize-terminal"),
     () => document.getElementById("terminal-wrap").offsetHeight,
-    (h) => { document.getElementById("terminal-wrap").style.height = Math.max(40, Math.min(window.innerHeight * 0.6, h)) + "px"; }
+    (h) => {
+      const clamped = Math.max(60, Math.min(window.innerHeight * 0.6, h));
+      document.getElementById("terminal-wrap").style.height = clamped + "px";
+    }
   );
 }
 
@@ -250,7 +294,7 @@ function setLanguage(lang) {
     editor.setValue("# Python\nprint('Hello from WebLab IDE')\n\nfor i in range(5):\n    print(f'Line {i + 1}')");
     ignoreChange = false;
     document.getElementById("filename-display").textContent = "main.py";
-    document.getElementById("preview").srcdoc = `<html><body style="background:#0f0f13;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><p style="color:#6e7681;font-family:monospace;font-size:13px">Run Python to see output in terminal</p></body></html>`;
+    document.getElementById("preview").srcdoc = `<html><body style="background:#13131a;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><p style="color:#3d3d55;font-family:'JetBrains Mono',monospace;font-size:13px">▶ Run Python to see output in terminal</p></body></html>`;
   }
 }
 
@@ -324,25 +368,54 @@ async function exportAll() {
 }
 
 // ── Terminal ──────────────────────────────────────────────────
+// SECURITY FIX: Sanitize all terminal output via textContent (not innerHTML)
+// to prevent XSS from backend responses or user-crafted Python output.
 function log(msg, type = "normal") {
   const terminal = document.getElementById("terminal");
   const line = document.createElement("div");
+  line.className = "terminal-line";
 
-  if (type === "error") {
-    line.innerHTML = `<span class="prompt">~/weblab $</span> <span class="error">${msg}</span>`;
-  } else if (type === "info") {
-    line.innerHTML = `<span class="prompt">~/weblab $</span> <span class="info">${msg}</span>`;
-  } else {
-    line.innerHTML = `<span class="prompt">~/weblab $</span> ${msg}`;
-  }
+  const prompt = document.createElement("span");
+  prompt.className = "prompt";
+  prompt.textContent = "~/weblab $";
+
+  const space = document.createTextNode(" ");
+
+  const content = document.createElement("span");
+  // Safe: textContent never interprets HTML tags — prevents XSS
+  content.textContent = msg;
+
+  if (type === "error") content.className = "error";
+  else if (type === "info") content.className = "info";
+
+  line.appendChild(prompt);
+  line.appendChild(space);
+  line.appendChild(content);
 
   terminal.appendChild(line);
   terminal.scrollTop = terminal.scrollHeight;
 }
 
 function clearTerminal() {
-  document.getElementById("terminal").innerHTML = `<span class="prompt">~/weblab $</span> Terminal cleared.`;
+  const terminal = document.getElementById("terminal");
+  terminal.innerHTML = "";
+  const line = document.createElement("div");
+  line.className = "terminal-line";
+
+  const prompt = document.createElement("span");
+  prompt.className = "prompt";
+  prompt.textContent = "~/weblab $";
+
+  const msg = document.createTextNode(" Terminal cleared.");
+
+  line.appendChild(prompt);
+  line.appendChild(msg);
+  terminal.appendChild(line);
 }
 
 // ── Init ──────────────────────────────────────────────────────
-window.addEventListener("DOMContentLoaded", initResize);
+window.addEventListener("DOMContentLoaded", () => {
+  initResize();
+  // Auto-run ON by default
+  document.getElementById("autoRun").checked = true;
+});
